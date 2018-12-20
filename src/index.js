@@ -1,49 +1,65 @@
-import React, { Component } from "react";
-import { render } from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const app = document.getElementById("root");
+// the commented out code below is the way to implement a React Clock using stateless components but this isn't desirable. A component should be self-contained 
+// to fix this, we need state.
 
-class Post extends Component {
-  render() {
-    return React.createElement(
-      "div",
-      {
-        className: "post" //#C
-      },
-      React.createElement(
-        "h2",
-        {
-          className: "postAuthor",
-          id: this.props.id
-        },
-        this.props.user, //#D
-        React.createElement(
-          "span",
-          {
-            className: "postBody" //#E
-          },
-          this.props.content //#F
-        )
-      )
-    );
-  }
+class Clock extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {date: new Date()};
+    }
+
+    // lifecyle methods
+    // componentDidMount fires after the component output has been rendered to the DOM
+    componentDidMount(){
+        this.timerID = setInterval(
+            () => this.tick(),1000
+        );
+    }
+
+    // componentWillUnmount fires if the element is destroyed.
+    componentWillUnmount(){
+        clearInterval(this.timerID);
+    }
+
+    tick(){
+        this.setState({
+            date:new Date()
+        });
+    }
+
+    // the render method of component is called right after the constructor.
+    // render() is React learns what should be displayed to the screen when this component is used
+    render(){
+        return(
+            <div>
+                <h1>React Clock II</h1>
+                <h2>{this.state.date.toLocaleTimeString()}</h2>
+            </div>
+        );
+    }
 }
 
+ReactDOM.render(
+    <Clock />,
+    document.getElementById('root')
+);
 
-const App = React.createElement(Post, {
-  id: 1, 
-  content: " said: This is a React app built using Webpack, Babel, and Webpack Dev Server. Just the basics!", //#H
-  user: "Matt"
-});
+// function Clock(props){
+//     return(
+//         <div>
+//             <h1>React Clock II</h1>
+//             <h2>It is {props.date.toLocaleTimeString()}.</h2>
+//         </div>
+//     );
+// }
 
-render(App, app);
+// function tick(){
+//     ReactDOM.render(
+//         <Clock date={new Date()} />,
+//         document.getElementById('root')
+//     );
+// }
 
-
-
-
-
-
-
-
-// don't overwrite this!
-module.hot.accept();
+// setInterval(tick,1000);
